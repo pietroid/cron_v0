@@ -1,4 +1,4 @@
-# flutter_template
+# smart_notes
 
 A new Flutter project.
 
