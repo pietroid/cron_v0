@@ -28,17 +28,21 @@ class _MainScreenState extends State<MainScreen> {
           }),
       body: BlocBuilder<NoteBloc, NoteState>(
         builder: (context, state) => Column(children: [
+          const SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: state.notes.length,
               itemBuilder: (context, index) {
+                final shownIndex = state.notes.length - index - 1;
                 return Card(
                   elevation: 3, // Add a shadow effect
                   margin: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 4), // Add margin around the card
                   child: ListTile(
                     title: Text(
-                      state.notes[index].content,
+                      state.notes[shownIndex].content,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -47,7 +51,7 @@ class _MainScreenState extends State<MainScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => NoteScreen(
-                            existingNote: state.notes[index],
+                            existingNote: state.notes[shownIndex],
                           ),
                         ),
                       );
