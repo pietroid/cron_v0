@@ -32,18 +32,27 @@ class _MainScreenState extends State<MainScreen> {
             child: ListView.builder(
               itemCount: state.notes.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(state.notes[index].content),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NoteScreen(
-                          existingNote: state.notes[index],
+                return Card(
+                  elevation: 3, // Add a shadow effect
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 4), // Add margin around the card
+                  child: ListTile(
+                    title: Text(
+                      state.notes[index].content,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NoteScreen(
+                            existingNote: state.notes[index],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               },
             ),
