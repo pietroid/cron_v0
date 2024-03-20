@@ -34,10 +34,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-ThemeData _buildTheme(brightness) {
-  var baseTheme = ThemeData(brightness: brightness);
+ThemeData _buildTheme(Brightness brightness) {
+  var baseTheme = ThemeData(
+    brightness: brightness,
+  );
 
   return baseTheme.copyWith(
     textTheme: GoogleFonts.poppinsTextTheme(baseTheme.textTheme),
+    colorScheme: ColorScheme.fromSwatch()
+        .copyWith(secondary: const Color.fromARGB(255, 53, 85, 62)),
   );
 }
