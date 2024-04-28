@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_notes/blocs/note_bloc.dart';
-import 'package:smart_notes/blocs/note_event.dart';
-import 'package:smart_notes/entities/note.dart';
-import 'package:smart_notes/utils/note_id_generator.dart';
+import 'package:smart_activities/data/entities/activity.dart';
+import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
+import 'package:smart_activities/presentation/blocs/activity_event.dart';
 
-class NoteScreen extends StatefulWidget {
-  final Note? existingNote;
-  const NoteScreen({super.key, this.existingNote});
+class ActivityScreen extends StatefulWidget {
+  final Activity? existingActivity;
+  const ActivityScreen({super.key, this.existingActivity});
 
   @override
-  State<NoteScreen> createState() => _NoteScreenState();
+  State<ActivityScreen> createState() => _ActivityScreenState();
 }
 
-class _NoteScreenState extends State<NoteScreen> {
+class _ActivityScreenState extends State<ActivityScreen> {
   String content = '';
   late TextEditingController _controller;
 
   @override
   void initState() {
-    _controller = TextEditingController(text: widget.existingNote?.content);
+    _controller = TextEditingController(text: widget.existingActivity?.content);
     super.initState();
   }
 
@@ -33,10 +32,10 @@ class _NoteScreenState extends State<NoteScreen> {
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
-                if (widget.existingNote != null) {
-                  context.read<NoteBloc>().add(
-                        NoteDeleted(
-                          timestamp: widget.existingNote!.id,
+                if (widget.existingActivity != null) {
+                  context.read<ActivityBloc>().add(
+                        ActivityDeleted(
+                          timestamp: widget.existingActivity!.id,
                         ),
                       );
                 }
@@ -69,18 +68,18 @@ class _NoteScreenState extends State<NoteScreen> {
           onPressed: content.isEmpty
               ? null
               : () {
-                  if (widget.existingNote != null) {
-                    context.read<NoteBloc>().add(
-                          NoteEdited(
+                  if (widget.existingActivity != null) {
+                    context.read<ActivityBloc>().add(
+                          ActivityEdited(
                             content: content,
-                            id: widget.existingNote!.id,
+                            id: widget.existingActivity!.id,
                           ),
                         );
                   } else {
-                    context.read<NoteBloc>().add(
-                          NoteAdded(
+                    context.read<ActivityBloc>().add(
+                          ActivityAdded(
                             content: content,
-                            id: NoteIdGenerator().generateId(),
+                            isPrioritized: true,
                           ),
                         );
                   }
