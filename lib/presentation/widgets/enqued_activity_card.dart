@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_activities/data/entities/activity.dart';
+import 'package:smart_activities/presentation/formatters/activity_formatter.dart';
 import 'package:smart_activities/presentation/screens/activity_screen.dart';
 
 class EnqueuedActivityCard extends StatefulWidget {
@@ -23,6 +24,7 @@ class _EnqueuedActivityCardState extends State<EnqueuedActivityCard> {
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
+        trailing: Text("ETA: ${widget.activity.getInitialTimeFormatted()}"),
         onTap: () {
           Navigator.push(
             context,
