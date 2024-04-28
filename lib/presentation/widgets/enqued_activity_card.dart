@@ -14,17 +14,28 @@ class EnqueuedActivityCard extends StatefulWidget {
 class _EnqueuedActivityCardState extends State<EnqueuedActivityCard> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 3, // Add a shadow effect
       margin: const EdgeInsets.symmetric(
           horizontal: 8, vertical: 4), // Add margin around the card
       child: ListTile(
-        title: Text(
-          widget.activity.content,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 8), // Add padding inside the card
+        title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            widget.activity.content,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          Text(
+            widget.activity.getInitialTimeFormatted(),
+            style: theme.textTheme.bodySmall,
+          ),
+        ]),
+        trailing: Text(
+          widget.activity.getTargetTimeFormatted(),
         ),
-        trailing: Text("ETA: ${widget.activity.getInitialTimeFormatted()}"),
         onTap: () {
           Navigator.push(
             context,

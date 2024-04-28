@@ -168,15 +168,16 @@ class _TimeActionChoiceState extends State<TimeActionChoice> {
     final theme = Theme.of(context);
 
     final Map<String, Duration> timeMap = {
+      '5 min': const Duration(minutes: 5),
       '15 min': const Duration(minutes: 15),
       '30 min': const Duration(minutes: 30),
-      '1h': const Duration(hours: 1),
+      '45 min': const Duration(minutes: 45),
     };
 
     return Wrap(
       spacing: 5.0,
       children: List<Widget>.generate(
-        3,
+        4,
         (int index) {
           return ChoiceChip(
             selectedColor: theme.colorScheme.secondary,
