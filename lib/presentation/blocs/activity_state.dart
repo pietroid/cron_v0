@@ -6,38 +6,27 @@ part 'activity_state.g.dart';
 
 @JsonSerializable()
 class ActivityState extends Equatable {
-  final List<Activity> enqued;
-  final List<Activity> currentlyActive;
-  final List<Activity> inactive;
+  final Set<Activity> futureActivities;
+  final Set<Activity> pastActivities;
 
   const ActivityState({
-    this.enqued = const [],
-    this.currentlyActive = const [],
-    this.inactive = const [],
+    this.futureActivities = const {},
+    this.pastActivities = const {},
   });
 
   @override
-  List<Object?> get props => [
-        Object.hashAll(
-          enqued.map((element) => element.hashCode),
-        ),
-        Object.hashAll(
-          currentlyActive.map((element) => element.hashCode),
-        ),
-        Object.hashAll(
-          inactive.map((element) => element.hashCode),
-        ),
+  List<Object> get props => [
+        futureActivities,
+        pastActivities,
       ];
 
   ActivityState to({
-    List<Activity>? enqued,
-    List<Activity>? currentlyActive,
-    List<Activity>? inactive,
+    Set<Activity>? futureActivities,
+    Set<Activity>? pastActivities,
   }) {
     return ActivityState(
-      enqued: enqued ?? this.enqued,
-      currentlyActive: currentlyActive ?? this.currentlyActive,
-      inactive: inactive ?? this.inactive,
+      futureActivities: futureActivities ?? this.futureActivities,
+      pastActivities: pastActivities ?? this.pastActivities,
     );
   }
 

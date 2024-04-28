@@ -6,15 +6,15 @@ extension ActivityFormatter on Activity {
     final timeDifference = currentTime.difference(startTime);
     final dateTimeDifference = DateTime(0).add(timeDifference);
 
-    final f = DateFormat('hh:mm:ss');
+    final f = DateFormat('mm:ss');
     return f.format(dateTimeDifference);
   }
 
   String getTargetTimeFormatted() {
-    final timeDifference = startTime.difference(DateTime.now());
+    final timeDifference = endTime.difference(startTime);
     final dateTimeDifference = DateTime(0).add(timeDifference);
 
-    final f = DateFormat('hh:mm:ss');
+    final f = DateFormat('mm:ss');
     return f.format(dateTimeDifference);
   }
 
@@ -26,5 +26,12 @@ extension ActivityFormatter on Activity {
   String getFinalTimeFormatted() {
     final f = DateFormat("hh'h'mm");
     return f.format(endTime);
+  }
+
+  double getProgress() {
+    final totalDuration = endTime.difference(startTime);
+    final elapsedDuration = currentTime.difference(startTime);
+
+    return elapsedDuration.inMilliseconds / totalDuration.inMilliseconds;
   }
 }

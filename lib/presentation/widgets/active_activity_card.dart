@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/presentation/activity_formatter.dart';
+import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
+import 'package:smart_activities/presentation/blocs/activity_event.dart';
+import 'package:smart_activities/presentation/formatters/activity_formatter.dart';
 
 class PlayingActivityCard extends StatefulWidget {
   final Activity activity;
@@ -30,12 +33,15 @@ class _PlayingActivityCardState extends State<PlayingActivityCard> {
                   ),
                 ],
               ),
-              const PlayPauseButton(),
+              PlayPauseButton(
+                isPlaying: widget.activity.status == ActivityStatus.inProgress,
+                activity: widget.activity,
+              ),
             ]),
             const SizedBox(
               height: 24,
             ),
-            const ProgressBar(),
+            ProgressBar(progress: widget.activity.getProgress()),
             const SizedBox(
               height: 8,
             ),
@@ -64,28 +70,36 @@ class _PlayingActivityCardState extends State<PlayingActivityCard> {
 }
 
 class ProgressBar extends StatelessWidget {
-  const ProgressBar({super.key});
+  final double progress;
+  const ProgressBar({super.key, required this.progress});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return LinearProgressIndicator(
       backgroundColor: theme.progressIndicatorTheme.refreshBackgroundColor,
-      value: 0.5,
+      value: progress,
     );
   }
 }
 
 class PlayPauseButton extends StatelessWidget {
-  const PlayPauseButton({super.key});
+  final bool isPlaying;
+  final Activity activity;
+  const PlayPauseButton({
+    super.key,
+    required this.isPlaying,
+    required this.activity,
+  });
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.play_arrow),
-      onPressed: () {
-        //
-      },
+      icon: Icon(
+        isPlaying ? Icons.pause : Icons.play_arrow,
+      ),
+      onPressed: () =>
+          context.read<ActivityBloc>().add(ToggleActivity(activity: activity)),
     );
   }
 }

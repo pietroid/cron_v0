@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:smart_activities/data/entities/activity.dart';
 
 class ActivityEvent extends Equatable {
   const ActivityEvent();
@@ -40,4 +41,14 @@ class ActivityDeleted extends ActivityEvent {
 
   @override
   List<Object> get props => [timestamp];
+}
+
+class RefreshPlayingActivities extends ActivityEvent {
+  final DateTime currentTime;
+  const RefreshPlayingActivities({required this.currentTime});
+}
+
+class ToggleActivity extends ActivityEvent {
+  final Activity activity;
+  const ToggleActivity({required this.activity});
 }

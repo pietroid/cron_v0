@@ -4,26 +4,50 @@ import 'package:smart_activities/presentation/blocs/activity_state.dart';
 
 extension ActivitiesTransformer on ActivityBloc {
   ActivityState addActivity(Activity activity) {
-    final newEnqueued = List<Activity>.from(state.enqued);
-    newEnqueued.add(activity);
+    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+
+    newFutureActivities.add(activity);
 
     return state.to(
-      enqued: newEnqueued,
+      futureActivities: newFutureActivities,
     );
   }
 
   ActivityState playActivity(Activity activity) {
-    activity.status = ActivityStatus.inProgress;
+    final newActivity = activity.to(
+      status: ActivityStatus.inProgress,
+    );
 
-    final newEnqueued = List<Activity>.from(state.enqued);
-    final newCurrentlyActive = List<Activity>.from(state.currentlyActive);
+    return _replaceActivity(activity, newActivity);
+  }
 
-    newEnqueued.remove(activity);
-    newCurrentlyActive.add(activity);
+  ActivityState pauseActivity(Activity activity) {
+    final newActivity = activity.to(
+      status: ActivityStatus.paused,
+    );
+
+    return _replaceActivity(activity, newActivity);
+  }
+
+  ActivityState _replaceActivity(Activity activity, Activity newActivity) {
+    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+    newFutureActivities.remove(activity);
+    newFutureActivities.add(newActivity);
 
     return state.to(
-      enqued: newEnqueued,
-      currentlyActive: newCurrentlyActive,
+      futureActivities: newFutureActivities,
+    );
+  }
+
+  ActivityState refreshActiveStatesWithCurrentTime(DateTime currentTime) {
+    final newFutureActivities = state.futureActivities
+        .map((activity) => activity.to(
+              currentTime: currentTime,
+            ))
+        .toSet();
+
+    return state.to(
+      futureActivities: newFutureActivities,
     );
   }
 }

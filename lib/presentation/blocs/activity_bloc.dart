@@ -10,9 +10,17 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   ActivityBloc() : super(const ActivityState()) {
     hydrate();
     on<ActivityAdded>(_onActivityAdded);
+    on<RefreshPlayingActivities>(_onRefreshPlayingActivities);
+    on<ToggleActivity>(_onToggleActivity);
 
     // on<ActivityEdited>(_onActivityEdited);
     // on<ActivityDeleted>(_onActivityDeleted);
+
+    Stream.periodic(const Duration(seconds: 1), (_) {}).listen((event) {
+      add(RefreshPlayingActivities(
+        currentTime: DateTime.now(),
+      ));
+    });
   }
 
   // HydratedBloc part
@@ -24,14 +32,17 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   Map<String, dynamic> toJson(ActivityState state) => state.toJson();
 
   // Events
-  void _onActivityAdded(ActivityAdded event, Emitter<ActivityState> emit) {
+  void _onActivityAdded(
+    ActivityAdded event,
+    Emitter<ActivityState> emit,
+  ) {
     final startTime = DateTime.now();
 
     final newActivity = Activity(
       id: ActivityIdGenerator().generateId(),
       startTime: startTime,
       currentTime: startTime,
-      endTime: DateTime.now(),
+      endTime: startTime.add(const Duration(minutes: 15)),
       status: ActivityStatus.enqueued,
       content: event.content,
     );
@@ -39,10 +50,29 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     final activityState = addActivity(newActivity);
     emit(activityState);
 
-    // if (event.isPrioritized) {
-    //   final activityState = playActivity(newActivity);
-    //   emit(activityState);
-    // }
+    if (event.isPrioritized) {
+      final activityState = playActivity(newActivity);
+      emit(activityState);
+    }
+  }
+
+  void _onRefreshPlayingActivities(
+    RefreshPlayingActivities event,
+    Emitter<ActivityState> emit,
+  ) {
+    final activityState = refreshActiveStatesWithCurrentTime(event.currentTime);
+    emit(activityState);
+  }
+
+  void _onToggleActivity(ToggleActivity event, Emitter<ActivityState> emit) {
+    final activity = event.activity;
+    if (activity.status == ActivityStatus.inProgress) {
+      final activityState = pauseActivity(activity);
+      emit(activityState);
+    } else {
+      final activityState = playActivity(activity);
+      emit(activityState);
+    }
   }
 
   // void _onActivityEdited(ActivityEdited event, Emitter<ActivityState> emit) {

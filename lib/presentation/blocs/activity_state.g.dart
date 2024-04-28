@@ -8,23 +8,18 @@ part of 'activity_state.dart';
 
 ActivityState _$ActivityStateFromJson(Map<String, dynamic> json) =>
     ActivityState(
-      enqued: (json['enqued'] as List<dynamic>?)
+      futureActivities: (json['futureActivities'] as List<dynamic>?)
               ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      currentlyActive: (json['currentlyActive'] as List<dynamic>?)
+              .toSet() ??
+          const {},
+      pastActivities: (json['pastActivities'] as List<dynamic>?)
               ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      inactive: (json['inactive'] as List<dynamic>?)
-              ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+              .toSet() ??
+          const {},
     );
 
 Map<String, dynamic> _$ActivityStateToJson(ActivityState instance) =>
     <String, dynamic>{
-      'enqued': instance.enqued,
-      'currentlyActive': instance.currentlyActive,
-      'inactive': instance.inactive,
+      'futureActivities': instance.futureActivities.toList(),
+      'pastActivities': instance.pastActivities.toList(),
     };
