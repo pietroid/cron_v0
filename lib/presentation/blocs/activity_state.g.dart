@@ -16,10 +16,12 @@ ActivityState _$ActivityStateFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
               .toSet() ??
           const {},
+      latestTimeUpdated: DateTime.parse(json['latestTimeUpdated'] as String),
     );
 
 Map<String, dynamic> _$ActivityStateToJson(ActivityState instance) =>
     <String, dynamic>{
       'futureActivities': instance.futureActivities.toList(),
       'pastActivities': instance.pastActivities.toList(),
+      'latestTimeUpdated': instance.latestTimeUpdated.toIso8601String(),
     };

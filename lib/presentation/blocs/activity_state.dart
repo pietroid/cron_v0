@@ -8,25 +8,30 @@ part 'activity_state.g.dart';
 class ActivityState extends Equatable {
   final Set<Activity> futureActivities;
   final Set<Activity> pastActivities;
+  final DateTime latestTimeUpdated;
 
   const ActivityState({
     this.futureActivities = const {},
     this.pastActivities = const {},
+    required this.latestTimeUpdated,
   });
 
   @override
   List<Object> get props => [
         futureActivities,
         pastActivities,
+        latestTimeUpdated,
       ];
 
   ActivityState to({
     Set<Activity>? futureActivities,
     Set<Activity>? pastActivities,
+    DateTime? latestTimeUpdated,
   }) {
     return ActivityState(
       futureActivities: futureActivities ?? this.futureActivities,
       pastActivities: pastActivities ?? this.pastActivities,
+      latestTimeUpdated: latestTimeUpdated ?? this.latestTimeUpdated,
     );
   }
 

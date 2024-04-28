@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_activities/data/entities/activity.dart';
 import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
+import 'package:smart_activities/presentation/blocs/activity_event.dart';
 import 'package:smart_activities/presentation/blocs/activity_state.dart';
 import 'package:smart_activities/presentation/formatters/activity_list_formatter.dart';
 import 'package:smart_activities/presentation/screens/activity_screen.dart';
@@ -15,7 +16,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,5 +59,25 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    final activityBloc = context.read<ActivityBloc>();
+    if (state == AppLifecycleState.resumed) {
+      activityBloc.add(RefreshActivities(currentTime: DateTime.now()));
+    }
   }
 }

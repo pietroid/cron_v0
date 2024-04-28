@@ -7,7 +7,7 @@ import 'package:smart_activities/utils/activity_id_generator.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     with HydratedMixin {
-  ActivityBloc() : super(const ActivityState()) {
+  ActivityBloc() : super(ActivityState(latestTimeUpdated: DateTime.now())) {
     hydrate();
     on<ActivityAdded>(_onActivityAdded);
     on<RefreshActivities>(_onRefreshActivities);
@@ -34,9 +34,12 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     ActivityAdded event,
     Emitter<ActivityState> emit,
   ) {
-    final latestActivityEndTime = state.futureActivities
-        .map((activity) => activity.endTime)
-        .reduce((value, element) => value.isAfter(element) ? value : element);
+    DateTime latestActivityEndTime = DateTime.now();
+    if (state.futureActivities.isNotEmpty) {
+      latestActivityEndTime = state.futureActivities
+          .map((activity) => activity.endTime)
+          .reduce((value, element) => value.isAfter(element) ? value : element);
+    }
 
     final newActivity = Activity(
       id: ActivityIdGenerator().generateId(),
@@ -67,12 +70,14 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     RefreshActivities event,
     Emitter<ActivityState> emit,
   ) {
-    final activityState1 =
-        incrementPlayingActivities(const Duration(seconds: 1));
+    Duration timeElapsed =
+        event.currentTime.difference(state.latestTimeUpdated);
+    emit(state.to(latestTimeUpdated: event.currentTime));
+
+    final activityState1 = incrementPlayingActivities(timeElapsed);
     emit(activityState1);
 
-    final activityState2 =
-        incrementNotPlayingActivities(const Duration(seconds: 1));
+    final activityState2 = incrementNotPlayingActivities(timeElapsed);
     emit(activityState2);
 
     final activityState3 = removeExpiredActivities(event.currentTime);
