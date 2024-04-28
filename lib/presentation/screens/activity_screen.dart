@@ -36,7 +36,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 if (widget.existingActivity != null) {
                   context.read<ActivityBloc>().add(
                         ActivityDeleted(
-                          timestamp: widget.existingActivity!.id,
+                          activity: widget.existingActivity!,
                         ),
                       );
                 }

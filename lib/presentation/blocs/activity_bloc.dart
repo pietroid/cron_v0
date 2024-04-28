@@ -10,6 +10,8 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   ActivityBloc() : super(ActivityState(latestTimeUpdated: DateTime.now())) {
     hydrate();
     on<ActivityAdded>(_onActivityAdded);
+    on<ActivityDeleted>(_onActivityDeleted);
+
     on<RefreshActivities>(_onRefreshActivities);
     on<ToggleActivity>(_onToggleActivity);
     on<StopActivity>(_onStopActivity);
@@ -119,4 +121,9 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   //       state.activities.where((note) => note.id != event.timestamp).toList();
   //   emit(ActivityState(activities: deletedActivitys));
   // }
+
+  _onActivityDeleted(ActivityDeleted event, Emitter<ActivityState> emit) {
+    final activityState = stopActivity(event.activity);
+    emit(activityState);
+  }
 }

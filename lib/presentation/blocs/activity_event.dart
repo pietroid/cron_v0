@@ -37,12 +37,12 @@ class ActivityEdited extends ActivityEvent {
 }
 
 class ActivityDeleted extends ActivityEvent {
-  final int timestamp;
+  final Activity activity;
 
-  const ActivityDeleted({required this.timestamp});
+  const ActivityDeleted({required this.activity});
 
   @override
-  List<Object> get props => [timestamp];
+  List<Object> get props => [activity];
 }
 
 class RefreshActivities extends ActivityEvent {
