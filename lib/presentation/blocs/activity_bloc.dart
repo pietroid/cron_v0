@@ -34,8 +34,6 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     ActivityAdded event,
     Emitter<ActivityState> emit,
   ) {
-    final startTime = DateTime.now();
-
     final latestActivityEndTime = state.futureActivities
         .map((activity) => activity.endTime)
         .reduce((value, element) => value.isAfter(element) ? value : element);
@@ -44,7 +42,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
       id: ActivityIdGenerator().generateId(),
       startTime: latestActivityEndTime,
       currentTime: latestActivityEndTime,
-      endTime: latestActivityEndTime.add(const Duration(minutes: 30)),
+      endTime: latestActivityEndTime.add(event.duration),
       status: ActivityStatus.enqueued,
       content: event.content,
     );

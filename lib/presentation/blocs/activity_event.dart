@@ -11,14 +11,16 @@ class ActivityEvent extends Equatable {
 class ActivityAdded extends ActivityEvent {
   final String content;
   final bool isPrioritized;
+  final Duration duration;
 
   const ActivityAdded({
     required this.content,
     required this.isPrioritized,
+    required this.duration,
   });
 
   @override
-  List<Object> get props => [content, isPrioritized];
+  List<Object> get props => [content, isPrioritized, duration];
 }
 
 class ActivityEdited extends ActivityEvent {

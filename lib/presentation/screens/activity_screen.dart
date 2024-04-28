@@ -105,6 +105,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             ActivityAdded(
                               content: content,
                               isPrioritized: true,
+                              duration: duration,
                             ),
                           );
                     }
@@ -133,6 +134,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             ActivityAdded(
                               content: content,
                               isPrioritized: false,
+                              duration: duration,
                             ),
                           );
                     }
