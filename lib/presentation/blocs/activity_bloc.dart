@@ -10,14 +10,12 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   ActivityBloc() : super(const ActivityState()) {
     hydrate();
     on<ActivityAdded>(_onActivityAdded);
-    on<RefreshPlayingActivities>(_onRefreshPlayingActivities);
+    on<RefreshActivities>(_onRefreshActivities);
     on<ToggleActivity>(_onToggleActivity);
-
-    // on<ActivityEdited>(_onActivityEdited);
-    // on<ActivityDeleted>(_onActivityDeleted);
+    on<StopActivity>(_onStopActivity);
 
     Stream.periodic(const Duration(seconds: 1), (_) {}).listen((event) {
-      add(RefreshPlayingActivities(
+      add(RefreshActivities(
         currentTime: DateTime.now(),
       ));
     });
@@ -56,13 +54,16 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     }
   }
 
-  void _onRefreshPlayingActivities(
-    RefreshPlayingActivities event,
+  void _onRefreshActivities(
+    RefreshActivities event,
     Emitter<ActivityState> emit,
   ) {
     final activityState =
         incrementPlayingActivities(const Duration(seconds: 1));
     emit(activityState);
+
+    final newActivityState = startNextOnQueueIfNecessary();
+    emit(newActivityState);
   }
 
   void _onToggleActivity(ToggleActivity event, Emitter<ActivityState> emit) {
@@ -74,6 +75,12 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
       final activityState = playActivity(activity);
       emit(activityState);
     }
+  }
+
+  void _onStopActivity(StopActivity event, Emitter<ActivityState> emit) {
+    final activity = event.activity;
+    final activityState = stopActivity(activity);
+    emit(activityState);
   }
 
   // void _onActivityEdited(ActivityEdited event, Emitter<ActivityState> emit) {

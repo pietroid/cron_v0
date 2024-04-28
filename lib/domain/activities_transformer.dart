@@ -29,6 +29,45 @@ extension ActivitiesTransformer on ActivityBloc {
     return _replaceActivity(activity, newActivity);
   }
 
+  ActivityState stopActivity(Activity activity) {
+    final newActivity = activity.to(
+      status: ActivityStatus.completed,
+    );
+
+    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+    newFutureActivities.remove(activity);
+
+    final newPastActivities = Set<Activity>.from(state.pastActivities);
+    newPastActivities.add(newActivity);
+
+    return state.to(
+      futureActivities: newFutureActivities,
+      pastActivities: newPastActivities,
+    );
+  }
+
+  ActivityState startNextOnQueueIfNecessary() {
+    final playingActivities = state.futureActivities
+        .where((activity) => activity.status == ActivityStatus.inProgress)
+        .toList();
+
+    if (playingActivities.isEmpty) {
+      final enqueuedActivities = state.futureActivities
+          .where((activity) => activity.status == ActivityStatus.enqueued)
+          .toList();
+
+      if (enqueuedActivities.isNotEmpty) {
+        final newActivity = enqueuedActivities.first.to(
+          status: ActivityStatus.inProgress,
+        );
+
+        return _replaceActivity(enqueuedActivities.first, newActivity);
+      }
+    }
+
+    return state;
+  }
+
   ActivityState _replaceActivity(Activity activity, Activity newActivity) {
     final newFutureActivities = Set<Activity>.from(state.futureActivities);
     newFutureActivities.remove(activity);

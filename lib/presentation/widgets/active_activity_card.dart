@@ -18,6 +18,8 @@ class _PlayingActivityCardState extends State<PlayingActivityCard> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isPlaying = widget.activity.status == ActivityStatus.inProgress;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Padding(
@@ -34,10 +36,13 @@ class _PlayingActivityCardState extends State<PlayingActivityCard> {
                   ),
                 ],
               ),
-              PlayPauseButton(
-                isPlaying: widget.activity.status == ActivityStatus.inProgress,
-                activity: widget.activity,
-              ),
+              Row(children: [
+                if (!isPlaying) StopButton(activity: widget.activity),
+                PlayPauseButton(
+                  isPlaying: isPlaying,
+                  activity: widget.activity,
+                ),
+              ]),
             ]),
             const SizedBox(
               height: 24,
@@ -80,6 +85,21 @@ class ProgressBar extends StatelessWidget {
     return LinearProgressIndicator(
       backgroundColor: theme.progressIndicatorTheme.refreshBackgroundColor,
       value: progress,
+    );
+  }
+}
+
+class StopButton extends StatelessWidget {
+  final Activity activity;
+  const StopButton({super.key, required this.activity});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.stop),
+      onPressed: () => context.read<ActivityBloc>().add(StopActivity(
+            activity: activity,
+          )),
     );
   }
 }
