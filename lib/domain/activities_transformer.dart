@@ -53,7 +53,9 @@ extension ActivitiesTransformer on ActivityBloc {
 
     if (playingActivities.isEmpty) {
       final enqueuedActivities = state.futureActivities
-          .where((activity) => activity.status == ActivityStatus.enqueued)
+          .where((activity) =>
+              activity.status == ActivityStatus.enqueued ||
+              activity.status == ActivityStatus.paused)
           .toList();
 
       if (enqueuedActivities.isNotEmpty) {
@@ -66,6 +68,16 @@ extension ActivitiesTransformer on ActivityBloc {
     }
 
     return state;
+  }
+
+  ActivityState removeExpiredActivities(DateTime now) {
+    final newFutureActivities = state.futureActivities
+        .where((activity) => activity.endTime.isAfter(now))
+        .toSet();
+
+    return state.to(
+      futureActivities: newFutureActivities,
+    );
   }
 
   ActivityState _replaceActivity(Activity activity, Activity newActivity) {

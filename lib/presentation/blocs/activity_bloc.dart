@@ -40,7 +40,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
       id: ActivityIdGenerator().generateId(),
       startTime: startTime,
       currentTime: startTime,
-      endTime: startTime.add(const Duration(minutes: 15)),
+      endTime: startTime.add(const Duration(seconds: 10)),
       status: ActivityStatus.enqueued,
       content: event.content,
     );
@@ -49,6 +49,13 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     emit(activityState);
 
     if (event.isPrioritized) {
+      final lastPlayingActivity = state.futureActivities
+          .where((activity) => activity.status == ActivityStatus.inProgress)
+          .lastOrNull;
+      if (lastPlayingActivity != null) {
+        final activityState = pauseActivity(lastPlayingActivity);
+        emit(activityState);
+      }
       final activityState = playActivity(newActivity);
       emit(activityState);
     }
@@ -58,12 +65,15 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     RefreshActivities event,
     Emitter<ActivityState> emit,
   ) {
-    final activityState =
+    final activityState1 =
         incrementPlayingActivities(const Duration(seconds: 1));
-    emit(activityState);
+    emit(activityState1);
 
-    final newActivityState = startNextOnQueueIfNecessary();
-    emit(newActivityState);
+    final activityState2 = removeExpiredActivities(event.currentTime);
+    emit(activityState2);
+
+    final activityState3 = startNextOnQueueIfNecessary();
+    emit(activityState3);
   }
 
   void _onToggleActivity(ToggleActivity event, Emitter<ActivityState> emit) {
