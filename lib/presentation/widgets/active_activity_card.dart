@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:smart_activities/data/entities/activity.dart';
 import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
 import 'package:smart_activities/presentation/blocs/activity_event.dart';
@@ -94,12 +95,22 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        isPlaying ? Icons.pause : Icons.play_arrow,
-      ),
-      onPressed: () =>
-          context.read<ActivityBloc>().add(ToggleActivity(activity: activity)),
+    final theme = Theme.of(context);
+    return Center(
+      child: Stack(children: [
+        if (isPlaying)
+          LoadingAnimationWidget.hexagonDots(
+              color: theme.progressIndicatorTheme.color ?? Colors.black,
+              size: 50),
+        IconButton(
+          icon: Icon(
+            isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+          onPressed: () => context
+              .read<ActivityBloc>()
+              .add(ToggleActivity(activity: activity)),
+        ),
+      ]),
     );
   }
 }

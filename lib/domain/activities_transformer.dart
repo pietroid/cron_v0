@@ -39,15 +39,16 @@ extension ActivitiesTransformer on ActivityBloc {
     );
   }
 
-  ActivityState refreshActiveStatesWithCurrentTime(DateTime currentTime) {
-    final newFutureActivities = state.futureActivities
-        .map((activity) => activity.to(
-              currentTime: currentTime,
-            ))
-        .toSet();
+  ActivityState incrementPlayingActivities(Duration duration) {
+    final newPlayingActivities = state.futureActivities.map((activity) {
+      if (activity.status == ActivityStatus.inProgress) {
+        return activity.to(currentTime: activity.currentTime.add(duration));
+      }
+      return activity;
+    }).toSet();
 
     return state.to(
-      futureActivities: newFutureActivities,
+      futureActivities: newPlayingActivities,
     );
   }
 }

@@ -60,7 +60,8 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     RefreshPlayingActivities event,
     Emitter<ActivityState> emit,
   ) {
-    final activityState = refreshActiveStatesWithCurrentTime(event.currentTime);
+    final activityState =
+        incrementPlayingActivities(const Duration(seconds: 1));
     emit(activityState);
   }
 
