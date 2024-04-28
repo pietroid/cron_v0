@@ -18,7 +18,7 @@ class _EnqueuedActivityCardState extends State<EnqueuedActivityCard> {
     return Card(
       elevation: 3, // Add a shadow effect
       margin: const EdgeInsets.symmetric(
-          horizontal: 8, vertical: 4), // Add margin around the card
+          horizontal: 14, vertical: 2), // Add margin around the card
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(
             horizontal: 16, vertical: 8), // Add padding inside the card

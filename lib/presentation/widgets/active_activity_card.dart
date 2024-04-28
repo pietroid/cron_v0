@@ -21,20 +21,27 @@ class _PlayingActivityCardState extends State<PlayingActivityCard> {
     final isPlaying = widget.activity.status == ActivityStatus.inProgress;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      color: theme.colorScheme.secondary,
+      margin: const EdgeInsets.only(left: 30, right: 30, bottom: 40, top: 10),
+      elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(40),
         child: Column(
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.activity.content,
-                    style: theme.textTheme.titleMedium,
-                  ),
-                ],
+              SizedBox(
+                width: 180,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.activity.content,
+                      style: theme.textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
               ),
               Row(children: [
                 if (!isPlaying) StopButton(activity: widget.activity),

@@ -41,7 +41,7 @@ ThemeData _buildTheme(Brightness brightness) {
       brightness: brightness,
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: Color.fromARGB(255, 171, 171, 171),
-        linearTrackColor: Color.fromARGB(255, 85, 85, 85),
+        linearTrackColor: Color.fromARGB(255, 0, 57, 13),
       ));
 
   return baseTheme.copyWith(
