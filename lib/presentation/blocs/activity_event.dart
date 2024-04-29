@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:smart_activities/data/entities/activity.dart';
+import 'package:cron/data/entities/activity.dart';
 
 class ActivityEvent extends Equatable {
   const ActivityEvent();

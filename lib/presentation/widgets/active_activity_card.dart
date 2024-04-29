@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
-import 'package:smart_activities/presentation/blocs/activity_event.dart';
-import 'package:smart_activities/presentation/formatters/activity_formatter.dart';
+import 'package:cron/data/entities/activity.dart';
+import 'package:cron/presentation/blocs/activity_bloc.dart';
+import 'package:cron/presentation/blocs/activity_event.dart';
+import 'package:cron/presentation/formatters/activity_formatter.dart';
 
 class PlayingActivityCard extends StatefulWidget {
   final Activity activity;

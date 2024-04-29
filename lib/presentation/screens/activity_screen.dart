@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
-import 'package:smart_activities/presentation/blocs/activity_event.dart';
+import 'package:cron/data/entities/activity.dart';
+import 'package:cron/presentation/blocs/activity_bloc.dart';
+import 'package:cron/presentation/blocs/activity_event.dart';
 
 class ActivityScreen extends StatefulWidget {
   final Activity? existingActivity;

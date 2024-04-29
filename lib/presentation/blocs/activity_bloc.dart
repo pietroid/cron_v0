@@ -1,9 +1,9 @@
+import 'package:cron/data/entities/activity.dart';
+import 'package:cron/domain/activities_transformer.dart';
+import 'package:cron/presentation/blocs/activity_event.dart';
+import 'package:cron/presentation/blocs/activity_state.dart';
+import 'package:cron/utils/activity_id_generator.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/domain/activities_transformer.dart';
-import 'package:smart_activities/presentation/blocs/activity_event.dart';
-import 'package:smart_activities/presentation/blocs/activity_state.dart';
-import 'package:smart_activities/utils/activity_id_generator.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     with HydratedMixin {
@@ -107,19 +107,19 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
   }
 
   // void _onActivityEdited(ActivityEdited event, Emitter<ActivityState> emit) {
-  //   final editedActivitys = state.activities.map((note) {
+  //   final editedActivities = state.activities.map((note) {
   //     if (note.id == event.id) {
   //       return note.copyWith(content: event.content);
   //     }
   //     return note;
   //   }).toList();
-  //   emit(ActivityState(activities: editedActivitys));
+  //   emit(ActivityState(activities: editedActivities));
   // }
 
   // void _onActivityDeleted(ActivityDeleted event, Emitter<ActivityState> emit) {
-  //   final deletedActivitys =
+  //   final deletedActivities =
   //       state.activities.where((note) => note.id != event.timestamp).toList();
-  //   emit(ActivityState(activities: deletedActivitys));
+  //   emit(ActivityState(activities: deletedActivities));
   // }
 
   _onActivityDeleted(ActivityDeleted event, Emitter<ActivityState> emit) {

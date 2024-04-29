@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:smart_activities/data/entities/activity.dart';
+import 'package:cron/data/entities/activity.dart';
 
 part 'activity_state.g.dart';
 

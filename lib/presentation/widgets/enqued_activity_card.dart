@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/presentation/formatters/activity_formatter.dart';
-import 'package:smart_activities/presentation/screens/activity_screen.dart';
+import 'package:cron/data/entities/activity.dart';
+import 'package:cron/presentation/formatters/activity_formatter.dart';
+import 'package:cron/presentation/screens/activity_screen.dart';
 
 class EnqueuedActivityCard extends StatefulWidget {
   final Activity activity;

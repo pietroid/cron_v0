@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:smart_activities/data/entities/activity.dart';
+import 'package:cron/data/entities/activity.dart';
 
 extension ActivityFormatter on Activity {
   String getTimeElapsedFormatted() {

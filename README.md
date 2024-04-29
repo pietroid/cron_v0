@@ -1,4 +1,4 @@
-# smart_activities
+# cron
 
 A new Flutter project.
 

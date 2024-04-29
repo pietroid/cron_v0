@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_activities/data/entities/activity.dart';
-import 'package:smart_activities/presentation/blocs/activity_bloc.dart';
-import 'package:smart_activities/presentation/blocs/activity_event.dart';
-import 'package:smart_activities/presentation/blocs/activity_state.dart';
-import 'package:smart_activities/presentation/formatters/activity_list_formatter.dart';
-import 'package:smart_activities/presentation/screens/activity_screen.dart';
-import 'package:smart_activities/presentation/widgets/active_activity_card.dart';
-import 'package:smart_activities/presentation/widgets/enqued_activity_card.dart';
+import 'package:cron/data/entities/activity.dart';
+import 'package:cron/presentation/blocs/activity_bloc.dart';
+import 'package:cron/presentation/blocs/activity_event.dart';
+import 'package:cron/presentation/blocs/activity_state.dart';
+import 'package:cron/presentation/formatters/activity_list_formatter.dart';
+import 'package:cron/presentation/screens/activity_screen.dart';
+import 'package:cron/presentation/widgets/active_activity_card.dart';
+import 'package:cron/presentation/widgets/enqued_activity_card.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});

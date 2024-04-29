@@ -1,4 +1,4 @@
-package com.example.smart_activities
+package com.example.cron
 
 import io.flutter.embedding.android.FlutterActivity
 
