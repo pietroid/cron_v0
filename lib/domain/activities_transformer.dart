@@ -1,6 +1,6 @@
 import 'package:cron/data/entities/activity.dart';
-import 'package:cron/presentation/blocs/activity_bloc.dart';
-import 'package:cron/presentation/blocs/activity_state.dart';
+import 'package:cron/presentation/blocs/activity/activity_bloc.dart';
+import 'package:cron/presentation/blocs/activity/activity_state.dart';
 
 extension ActivitiesTransformer on ActivityBloc {
   ActivityState addActivity(Activity activity) {

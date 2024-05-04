@@ -1,5 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:cron/data/entities/activity.dart';
+import 'package:equatable/equatable.dart';
 
 class ActivityEvent extends Equatable {
   const ActivityEvent();
@@ -9,18 +9,17 @@ class ActivityEvent extends Equatable {
 }
 
 class ActivityAdded extends ActivityEvent {
-  final String content;
+  final Activity activity;
+
   final bool isPrioritized;
-  final Duration duration;
 
   const ActivityAdded({
-    required this.content,
+    required this.activity,
     required this.isPrioritized,
-    required this.duration,
   });
 
   @override
-  List<Object> get props => [content, isPrioritized, duration];
+  List<Object> get props => [activity, isPrioritized];
 }
 
 class ActivityEdited extends ActivityEvent {

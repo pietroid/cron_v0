@@ -1,5 +1,5 @@
 import 'package:cron/data/entities/activity.dart';
-import 'package:cron/presentation/blocs/activity_state.dart';
+import 'package:cron/presentation/blocs/activity/activity_state.dart';
 
 extension ActivityListFormatter on ActivityState {
   List<Activity> allOrderedActivities() {
