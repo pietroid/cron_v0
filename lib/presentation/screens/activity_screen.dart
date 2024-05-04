@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:cron/data/entities/activity.dart';
-import 'package:cron/presentation/blocs/activity_bloc.dart';
-import 'package:cron/presentation/blocs/activity_event.dart';
+import 'package:cron/presentation/blocs/activity/activity_bloc.dart';
+import 'package:cron/presentation/blocs/activity/activity_event.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ActivityScreen extends StatefulWidget {
   final Activity? existingActivity;
@@ -13,15 +13,20 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _ActivityScreenState extends State<ActivityScreen> {
-  String content = '';
-  Duration duration = const Duration(minutes: 15);
   late TextEditingController _controller;
+
+  late Activity activity;
 
   @override
   void initState() {
     _controller = TextEditingController(text: widget.existingActivity?.content);
+    activity = Activity.empty();
+    //TODO associate with initial state
+    activity.duration = const Duration(minutes: 5);
     super.initState();
   }
+
+  void update() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +66,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     controller: _controller,
                     autofocus: true,
                     onChanged: (value) {
-                      setState(() {
-                        content = value;
-                      });
+                      activity.content = value;
+                      update();
                     },
                     decoration: const InputDecoration(
                       border: InputBorder.none,
@@ -76,9 +80,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       children: [
                         const Text('Tempo:'),
                         TimeActionChoice(
+//TODO: remove this
                           onChanged: (Duration duration) {
                             setState(() {
-                              this.duration = duration;
+                              activity.duration = duration;
+                              update();
                             });
                           },
                         ),
@@ -90,22 +96,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
             backgroundColor: const Color.fromARGB(255, 156, 10, 0),
-            onPressed: content.isEmpty
+            onPressed: activity.content.isEmpty
                 ? null
                 : () {
                     if (widget.existingActivity != null) {
                       context.read<ActivityBloc>().add(
-                            ActivityEdited(
-                              content: content,
-                              id: widget.existingActivity!.id,
+                            ActivityAdded(
+                              activity: activity,
+                              isPrioritized: true,
                             ),
                           );
                     } else {
                       context.read<ActivityBloc>().add(
                             ActivityAdded(
-                              content: content,
+                              activity: activity,
                               isPrioritized: true,
-                              duration: duration,
                             ),
                           );
                     }
@@ -119,22 +124,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
             height: 20,
           ),
           FloatingActionButton(
-            onPressed: content.isEmpty
+            onPressed: activity.content.isEmpty
                 ? null
                 : () {
                     if (widget.existingActivity != null) {
                       context.read<ActivityBloc>().add(
                             ActivityEdited(
-                              content: content,
+                              content: activity.content,
                               id: widget.existingActivity!.id,
                             ),
                           );
                     } else {
                       context.read<ActivityBloc>().add(
                             ActivityAdded(
-                              content: content,
+                              activity: activity,
                               isPrioritized: false,
-                              duration: duration,
                             ),
                           );
                     }

@@ -1,8 +1,7 @@
 import 'package:cron/data/entities/activity.dart';
 import 'package:cron/domain/activities_transformer.dart';
-import 'package:cron/presentation/blocs/activity_event.dart';
-import 'package:cron/presentation/blocs/activity_state.dart';
-import 'package:cron/utils/activity_id_generator.dart';
+import 'package:cron/presentation/blocs/activity/activity_event.dart';
+import 'package:cron/presentation/blocs/activity/activity_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
@@ -43,13 +42,12 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
           .reduce((value, element) => value.isAfter(element) ? value : element);
     }
 
-    final newActivity = Activity(
-      id: ActivityIdGenerator().generateId(),
+    final newActivity = event.activity.to(
+      id: DateTime.now().millisecondsSinceEpoch,
       startTime: latestActivityEndTime,
+      endTime: latestActivityEndTime.add(event.activity.duration),
       currentTime: latestActivityEndTime,
-      endTime: latestActivityEndTime.add(event.duration),
       status: ActivityStatus.enqueued,
-      content: event.content,
     );
 
     final activityState = addActivity(newActivity);

@@ -11,8 +11,10 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
       startTime: DateTime.parse(json['startTime'] as String),
       endTime: DateTime.parse(json['endTime'] as String),
       currentTime: DateTime.parse(json['currentTime'] as String),
+      duration: Duration(microseconds: json['duration'] as int),
       status: $enumDecode(_$ActivityStatusEnumMap, json['status']),
       content: json['content'] as String,
+      isFixed: json['isFixed'] as bool,
     );
 
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
@@ -20,8 +22,10 @@ Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
       'startTime': instance.startTime.toIso8601String(),
       'endTime': instance.endTime.toIso8601String(),
       'currentTime': instance.currentTime.toIso8601String(),
+      'duration': instance.duration.inMicroseconds,
       'status': _$ActivityStatusEnumMap[instance.status]!,
       'content': instance.content,
+      'isFixed': instance.isFixed,
     };
 
 const _$ActivityStatusEnumMap = {

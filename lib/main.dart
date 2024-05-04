@@ -1,10 +1,10 @@
+import 'package:cron/presentation/blocs/activity/activity_bloc.dart';
+import 'package:cron/presentation/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:cron/presentation/blocs/activity_bloc.dart';
-import 'package:cron/presentation/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
