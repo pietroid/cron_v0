@@ -80,6 +80,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       children: [
                         const Text('Tempo:'),
                         TimeActionChoice(
+//TODO: remove this
                           onChanged: (Duration duration) {
                             setState(() {
                               activity.duration = duration;
