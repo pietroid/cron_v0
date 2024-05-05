@@ -12,12 +12,12 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     on<ActivityAdded>(_onActivityAdded);
     on<ActivityDeleted>(_onActivityDeleted);
 
-    on<RefreshActivities>(_onRefreshActivities);
+    on<UpdateActivities>(_onUpdateActivities);
     on<ToggleActivity>(_onToggleActivity);
     on<StopActivity>(_onStopActivity);
 
     Stream.periodic(const Duration(seconds: 1), (_) {}).listen((event) {
-      add(RefreshActivities(
+      add(UpdateActivities(
         currentTime: DateTime.now(),
       ));
     });
@@ -41,43 +41,33 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     final newActivity = event.activity.to(
       startTime: startTime,
       currentTime: startTime,
-      status: ActivityStatus.enqueued,
+      status: ActivityStatus.notStarted,
     );
 
     final activityState = addActivity(newActivity);
     emit(activityState);
 
-    if (event.isPrioritized) {
-      final lastPlayingActivity = state.futureActivities
-          .where((activity) => activity.status == ActivityStatus.inProgress)
-          .lastOrNull;
-      if (lastPlayingActivity != null) {
-        final activityState = pauseActivity(lastPlayingActivity);
-        emit(activityState);
-      }
-      final activityState = playActivity(newActivity);
-      emit(activityState);
-    }
+    add(UpdateActivities(currentTime: DateTime.now()));
   }
 
-  void _onRefreshActivities(
-    RefreshActivities event,
+  void _onUpdateActivities(
+    UpdateActivities event,
     Emitter<ActivityState> emit,
   ) {
     Duration timeElapsed =
         event.currentTime.difference(state.latestTimeUpdated);
     emit(state.to(latestTimeUpdated: event.currentTime));
 
-    final activityState1 = incrementPlayingActivities(timeElapsed);
+    final activityState1 = playActivities(event.currentTime);
     emit(activityState1);
 
-    final activityState2 = incrementNotPlayingActivities(timeElapsed);
+    final activityState2 = incrementPlayingActivities(timeElapsed);
     emit(activityState2);
 
-    final activityState3 = removeExpiredActivities(event.currentTime);
+    final activityState3 = incrementPausedActivities(timeElapsed);
     emit(activityState3);
 
-    final activityState4 = startNextOnQueueIfNecessary();
+    final activityState4 = removeExpiredActivities(event.currentTime);
     emit(activityState4);
   }
 

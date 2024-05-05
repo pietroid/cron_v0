@@ -44,9 +44,9 @@ class ActivityDeleted extends ActivityEvent {
   List<Object> get props => [activity];
 }
 
-class RefreshActivities extends ActivityEvent {
+class UpdateActivities extends ActivityEvent {
   final DateTime currentTime;
-  const RefreshActivities({required this.currentTime});
+  const UpdateActivities({required this.currentTime});
 }
 
 class ToggleActivity extends ActivityEvent {

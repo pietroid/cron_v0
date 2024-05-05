@@ -8,8 +8,8 @@ extension ActivitiesRepository on ActivityBloc {
       return DateTime.now();
     }
     DateTime latestActivityEndTime = DateTime.now();
-    if (state.futureActivities.isNotEmpty) {
-      latestActivityEndTime = state.futureActivities
+    if (state.presentFutureActivities.isNotEmpty) {
+      latestActivityEndTime = state.presentFutureActivities
           .map((activity) => activity.endTime)
           .reduce((value, element) => value.isAfter(element) ? value : element);
     }

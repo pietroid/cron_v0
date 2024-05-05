@@ -63,7 +63,7 @@ class Activity with EquatableMixin {
       startTime: DateTime(0),
       currentTime: DateTime(0),
       duration: Duration.zero,
-      status: ActivityStatus.enqueued,
+      status: ActivityStatus.notStarted,
       content: '',
       isFixed: false,
     );
@@ -71,7 +71,7 @@ class Activity with EquatableMixin {
 }
 
 enum ActivityStatus {
-  enqueued,
+  notStarted,
   inProgress,
   paused,
   completed,

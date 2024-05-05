@@ -27,7 +27,7 @@ Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
     };
 
 const _$ActivityStatusEnumMap = {
-  ActivityStatus.enqueued: 'enqueued',
+  ActivityStatus.notStarted: 'notStarted',
   ActivityStatus.inProgress: 'inProgress',
   ActivityStatus.paused: 'paused',
   ActivityStatus.completed: 'completed',
