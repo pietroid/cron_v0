@@ -53,7 +53,7 @@ class ActivityState with EquatableMixin {
         ..addAll(presentFutureActivities.map((activity) => Activity(
             id: activity.id,
             startTime: activity.startTime,
-            currentTime: activity.currentTime,
+            currentProgress: activity.currentProgress,
             duration: activity.duration,
             status: activity.status,
             content: activity.content,
@@ -62,7 +62,7 @@ class ActivityState with EquatableMixin {
         ..addAll(pastActivities.map((activity) => Activity(
             id: activity.id,
             startTime: activity.startTime,
-            currentTime: activity.currentTime,
+            currentProgress: activity.currentProgress,
             duration: activity.duration,
             status: activity.status,
             content: activity.content,

@@ -9,9 +9,9 @@ part 'activity.g.dart';
 final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
   int id;
   DateTime startTime;
-  DateTime currentTime;
 
   Duration duration;
+  Duration currentProgress;
 
   ActivityStatus status;
 
@@ -24,15 +24,16 @@ final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
   Activity({
     required this.id,
     required this.startTime,
-    required this.currentTime,
     required this.duration,
+    required this.currentProgress,
     required this.status,
     required this.content,
     required this.isFixed,
   });
 
   @override
-  List<Object> get props => [id, startTime, currentTime, status, content];
+  List<Object> get props =>
+      [id, startTime, duration, currentProgress, status, content];
 
   factory Activity.fromJson(Map<String, dynamic> json) =>
       _$ActivityFromJson(json);
@@ -42,7 +43,7 @@ final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
   Activity to({
     int? id,
     DateTime? startTime,
-    DateTime? currentTime,
+    Duration? currentProgress,
     Duration? duration,
     ActivityStatus? status,
     String? content,
@@ -51,7 +52,7 @@ final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
     return Activity(
       id: id ?? this.id,
       startTime: startTime ?? this.startTime,
-      currentTime: currentTime ?? this.currentTime,
+      currentProgress: currentProgress ?? this.currentProgress,
       duration: duration ?? this.duration,
       status: status ?? this.status,
       content: content ?? this.content,
@@ -63,7 +64,7 @@ final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
     return Activity(
       id: -1,
       startTime: DateTime(0),
-      currentTime: DateTime(0),
+      currentProgress: Duration.zero,
       duration: Duration.zero,
       status: ActivityStatus.notStarted,
       content: '',

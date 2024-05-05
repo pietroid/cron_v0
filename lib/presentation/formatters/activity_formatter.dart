@@ -1,10 +1,9 @@
-import 'package:intl/intl.dart';
 import 'package:cron/data/entities/activity.dart';
+import 'package:intl/intl.dart';
 
 extension ActivityFormatter on Activity {
   String getTimeElapsedFormatted() {
-    final timeDifference = currentTime.difference(startTime);
-    final dateTimeDifference = DateTime(0).add(timeDifference);
+    final dateTimeDifference = DateTime(0).add(currentProgress);
 
     final f = DateFormat('mm:ss');
     return f.format(dateTimeDifference);
@@ -30,8 +29,7 @@ extension ActivityFormatter on Activity {
 
   double getProgress() {
     final totalDuration = endTime.difference(startTime);
-    final elapsedDuration = currentTime.difference(startTime);
 
-    return elapsedDuration.inMilliseconds / totalDuration.inMilliseconds;
+    return currentProgress.inMilliseconds / totalDuration.inMilliseconds;
   }
 }
