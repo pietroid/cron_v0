@@ -16,6 +16,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   late TextEditingController _controller;
 
   late Activity activity;
+  late bool isPrioritized;
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
     activity.id = DateTime.now().millisecondsSinceEpoch;
     //TODO associate with initial state
     activity.duration = const Duration(minutes: 5);
+    isPrioritized = false;
     super.initState();
   }
 
@@ -32,122 +34,105 @@ class _ActivityScreenState extends State<ActivityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 50,
+            right: 50,
+            top: 20,
+            bottom: 70,
+          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SizedBox(
+              height: 200,
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
+                onChanged: (value) {
+                  activity.content = value;
+                  update();
+                },
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Descrição',
+                ),
+                maxLines: null,
+              ),
+            ),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text('Tempo:'),
+              TimeActionChoice(
+                onChanged: (Duration duration) {
+                  activity.duration = duration;
+                  update();
+                },
+              ),
+            ]),
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Switch(
+                // This bool value toggles the switch.
+                value: activity.isFixed,
+                activeColor: Colors.red,
+                onChanged: (bool value) {
+                  // This is called when the user toggles the switch.
+                  activity.isFixed = value;
+                  update();
+                },
+              ),
+              Text(
+                activity.isFixed
+                    ? 'Fixo (não pode mudar o horário)'
+                    : 'Móvel (pode mudar o horário)',
+              ),
+            ]),
+            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Switch(
+                // This bool value toggles the switch.
+                value: isPrioritized,
+                activeColor: Colors.red,
+                onChanged: (bool value) {
+                  // This is called when the user toggles the switch.
+                  isPrioritized = value;
+                  update();
+                },
+              ),
+              Text(
+                isPrioritized ? 'Começa agora' : 'Começa depois',
+              ),
+            ]),
+          ]),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: null,
+        onPressed: activity.content.isEmpty
+            ? null
+            : () {
                 if (widget.existingActivity != null) {
                   context.read<ActivityBloc>().add(
-                        ActivityDeleted(
-                          activity: widget.existingActivity!,
+                        ActivityAdded(
+                          activity: activity,
+                          isPrioritized: isPrioritized,
+                        ),
+                      );
+                } else {
+                  context.read<ActivityBloc>().add(
+                        ActivityAdded(
+                          activity: activity,
+                          isPrioritized: isPrioritized,
                         ),
                       );
                 }
                 Navigator.pop(context);
               },
-            ),
-          ],
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(
-              left: 50,
-              right: 50,
-              top: 20,
-              bottom: 70,
-            ),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextField(
-                    controller: _controller,
-                    autofocus: true,
-                    onChanged: (value) {
-                      activity.content = value;
-                      update();
-                    },
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Descrição',
-                    ),
-                    maxLines: null,
-                  ),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Tempo:'),
-                        TimeActionChoice(
-                          onChanged: (Duration duration) {
-                            activity.duration = duration;
-                            update();
-                          },
-                        ),
-                      ]),
-                ]),
-          ),
-        ),
-        floatingActionButton:
-            Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          FloatingActionButton(
-            heroTag: null,
-            backgroundColor: const Color.fromARGB(255, 156, 10, 0),
-            onPressed: activity.content.isEmpty
-                ? null
-                : () {
-                    if (widget.existingActivity != null) {
-                      context.read<ActivityBloc>().add(
-                            ActivityAdded(
-                              activity: activity,
-                              isPrioritized: true,
-                            ),
-                          );
-                    } else {
-                      context.read<ActivityBloc>().add(
-                            ActivityAdded(
-                              activity: activity,
-                              isPrioritized: true,
-                            ),
-                          );
-                    }
-                    Navigator.pop(context);
-                  },
-            child: const Icon(
-              Icons.directions_run,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          FloatingActionButton(
-            onPressed: activity.content.isEmpty
-                ? null
-                : () {
-                    if (widget.existingActivity != null) {
-                      context.read<ActivityBloc>().add(
-                            ActivityEdited(
-                              content: activity.content,
-                              id: widget.existingActivity!.id,
-                            ),
-                          );
-                    } else {
-                      context.read<ActivityBloc>().add(
-                            ActivityAdded(
-                              activity: activity,
-                              isPrioritized: false,
-                            ),
-                          );
-                    }
-                    Navigator.pop(context);
-                  },
-            child: const Icon(
-              Icons.check,
-            ),
-          )
-        ]));
+        child: const Icon(Icons.check),
+      ),
+    );
   }
 }
 
@@ -171,16 +156,17 @@ class _TimeActionChoiceState extends State<TimeActionChoice> {
     final theme = Theme.of(context);
 
     final Map<String, Duration> timeMap = {
-      '5 min': const Duration(minutes: 5),
-      '15 min': const Duration(minutes: 15),
-      '30 min': const Duration(minutes: 30),
-      '45 min': const Duration(minutes: 45),
+      "5'": const Duration(minutes: 5),
+      "15'": const Duration(minutes: 15),
+      "30'": const Duration(minutes: 30),
+      "45'": const Duration(minutes: 45),
+      "1h": const Duration(hours: 1),
     };
 
     return Wrap(
-      spacing: 5.0,
+      spacing: 2.0,
       children: List<Widget>.generate(
-        4,
+        timeMap.length,
         (int index) {
           return ChoiceChip(
             selectedColor: theme.colorScheme.secondary,
