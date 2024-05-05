@@ -1,111 +1,65 @@
 import 'package:cron/data/entities/activity.dart';
+import 'package:cron/domain/activity_transformer.dart';
 import 'package:cron/presentation/blocs/activity/activity_bloc.dart';
-import 'package:cron/presentation/blocs/activity/activity_state.dart';
 
 extension ActivitiesTransformer on ActivityBloc {
-  ActivityState addActivity(Activity activity) {
-    final newFutureActivities =
-        Set<Activity>.from(state.presentFutureActivities);
-
-    newFutureActivities.add(activity);
-
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-    );
+  void addActivity(Activity activity) {
+    currentState.presentFutureActivities.add(activity);
   }
 
-  ActivityState playActivity(Activity activity) {
-    final newActivity = activity.to(
-      status: ActivityStatus.inProgress,
-    );
-
-    return _replaceActivity(activity, newActivity);
+  void pauseActivity(Activity activity) {
+    _findActivity(activity).pause();
   }
 
-  ActivityState pauseActivity(Activity activity) {
-    final newActivity = activity.to(
-      status: ActivityStatus.paused,
-    );
-
-    return _replaceActivity(activity, newActivity);
+  void playActivity(Activity activity) {
+    _findActivity(activity).play();
   }
 
-  ActivityState stopActivity(Activity activity) {
-    final newActivity = activity.to(
-      status: ActivityStatus.completed,
-    );
+  void stopActivity(Activity activity) {
+    final foundActivity = _findActivity(activity);
 
-    final newFutureActivities =
-        Set<Activity>.from(state.presentFutureActivities);
-    newFutureActivities.remove(activity);
-
-    final newPastActivities = Set<Activity>.from(state.pastActivities);
-    newPastActivities.add(newActivity);
-
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-      pastActivities: newPastActivities,
-    );
+    currentState.presentFutureActivities.remove(foundActivity);
+    foundActivity.stop();
+    currentState.pastActivities.add(foundActivity);
   }
 
-  ActivityState removeExpiredActivities(DateTime now) {
-    final newFutureActivities = state.presentFutureActivities
-        .where((activity) => activity.endTime.isAfter(now))
-        .toSet();
+  void removeExpiredActivities(DateTime now) {
+    final expiredActivities = currentState.presentFutureActivities
+        .where((activity) => activity.endTime.isBefore(now))
+        .toList();
 
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-    );
+    for (var activity in expiredActivities) {
+      stopActivity(activity);
+    }
   }
 
-  ActivityState _replaceActivity(Activity activity, Activity newActivity) {
-    final newFutureActivities =
-        Set<Activity>.from(state.presentFutureActivities);
-    newFutureActivities.remove(activity);
-    newFutureActivities.add(newActivity);
-
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-    );
-  }
-
-  ActivityState playActivities(DateTime now) {
-    final newFutureActivities = state.presentFutureActivities.map((activity) {
+  void playActivities(DateTime now) {
+    for (var activity in currentState.presentFutureActivities) {
       if (activity.status == ActivityStatus.notStarted &&
           activity.startTime.isBefore(now)) {
-        return activity.to(status: ActivityStatus.inProgress);
+        activity.play();
       }
-      return activity;
-    }).toSet();
-
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-    );
+    }
   }
 
-  ActivityState incrementPlayingActivities(Duration duration) {
-    final newPlayingActivities = state.presentFutureActivities.map((activity) {
+  void incrementPlayingActivities(Duration duration) {
+    for (var activity in currentState.presentFutureActivities) {
       if (activity.status == ActivityStatus.inProgress) {
-        return activity.to(currentTime: activity.currentTime.add(duration));
+        activity.currentTime = activity.currentTime.add(duration);
       }
-      return activity;
-    }).toSet();
-
-    return state.to(
-      presentFutureActivities: newPlayingActivities,
-    );
+    }
   }
 
-  ActivityState incrementPausedActivities(Duration duration) {
-    final newFutureActivities = state.presentFutureActivities.map((activity) {
+  void incrementPausedActivities(Duration duration) {
+    for (var activity in currentState.presentFutureActivities) {
       if (activity.status == ActivityStatus.paused) {
-        return activity.to(duration: activity.duration + duration);
+        activity.duration += duration;
       }
-      return activity;
-    }).toSet();
+    }
+  }
 
-    return state.to(
-      presentFutureActivities: newFutureActivities,
-    );
+  Activity _findActivity(Activity activity) {
+    return currentState.presentFutureActivities
+        .firstWhere((element) => element.id == activity.id);
   }
 }
