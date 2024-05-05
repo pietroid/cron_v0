@@ -45,7 +45,7 @@ extension ActivitiesTransformer on ActivityBloc {
   void incrementPlayingActivities(Duration duration) {
     for (var activity in currentState.presentFutureActivities) {
       if (activity.status == ActivityStatus.inProgress) {
-        activity.currentTime = activity.currentTime.add(duration);
+        activity.currentProgress += duration;
       }
     }
   }
@@ -55,6 +55,14 @@ extension ActivitiesTransformer on ActivityBloc {
       if (activity.status == ActivityStatus.paused) {
         activity.duration += duration;
       }
+    }
+  }
+
+  void solveOverlappingActivities() {
+    final activities = currentState.presentFutureActivities;
+
+    for (var activity in activities) {
+      activity.avoidOverlappingMoveThisBasedOnPast();
     }
   }
 

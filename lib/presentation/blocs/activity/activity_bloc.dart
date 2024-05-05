@@ -57,7 +57,6 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
 
     final newActivity = event.activity.to(
       startTime: startTime,
-      currentTime: startTime,
       status: ActivityStatus.notStarted,
     );
 
@@ -79,8 +78,8 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     playActivities(event.currentTime);
     incrementPlayingActivities(timeElapsed);
     incrementPausedActivities(timeElapsed);
-
-    //currentState.presentFutureActivities = <Activity>{};
+    solveOverlappingActivities();
+    // currentState.presentFutureActivities.clear();
 
     update(emitter);
   }
