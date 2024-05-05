@@ -3,16 +3,16 @@ import 'package:cron/presentation/blocs/activity/activity_state.dart';
 
 extension ActivityListFormatter on ActivityState {
   List<Activity> allOrderedActivities() {
-    final playingActivities = futureActivities
+    final playingActivities = presentFutureActivities
         .where((activity) => activity.status == ActivityStatus.inProgress)
         .toList();
 
-    final pausedActivities = futureActivities
+    final pausedActivities = presentFutureActivities
         .where((activity) => activity.status == ActivityStatus.paused)
         .toList();
 
-    final enquedActivities = futureActivities
-        .where((activity) => activity.status == ActivityStatus.enqueued)
+    final enquedActivities = presentFutureActivities
+        .where((activity) => activity.status == ActivityStatus.notStarted)
         .toList();
 
     final playingActivitiesSorted = playingActivities.toList()

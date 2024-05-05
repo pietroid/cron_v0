@@ -1,35 +1,36 @@
+import 'package:cron/data/entities/activity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:cron/data/entities/activity.dart';
 
 part 'activity_state.g.dart';
 
 @JsonSerializable()
 class ActivityState extends Equatable {
-  final Set<Activity> futureActivities;
+  final Set<Activity> presentFutureActivities;
   final Set<Activity> pastActivities;
   final DateTime latestTimeUpdated;
 
   const ActivityState({
-    this.futureActivities = const {},
+    this.presentFutureActivities = const {},
     this.pastActivities = const {},
     required this.latestTimeUpdated,
   });
 
   @override
   List<Object> get props => [
-        futureActivities,
+        presentFutureActivities,
         pastActivities,
         latestTimeUpdated,
       ];
 
   ActivityState to({
-    Set<Activity>? futureActivities,
+    Set<Activity>? presentFutureActivities,
     Set<Activity>? pastActivities,
     DateTime? latestTimeUpdated,
   }) {
     return ActivityState(
-      futureActivities: futureActivities ?? this.futureActivities,
+      presentFutureActivities:
+          presentFutureActivities ?? this.presentFutureActivities,
       pastActivities: pastActivities ?? this.pastActivities,
       latestTimeUpdated: latestTimeUpdated ?? this.latestTimeUpdated,
     );

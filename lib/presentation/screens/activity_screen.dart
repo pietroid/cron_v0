@@ -24,7 +24,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
     activity = Activity.empty();
     activity.id = DateTime.now().millisecondsSinceEpoch;
     //TODO associate with initial state
-    activity.duration = const Duration(minutes: 5);
+    activity.duration = const Duration(minutes: 15);
     isPrioritized = false;
     super.initState();
   }

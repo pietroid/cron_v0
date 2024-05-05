@@ -4,12 +4,13 @@ import 'package:cron/presentation/blocs/activity/activity_state.dart';
 
 extension ActivitiesTransformer on ActivityBloc {
   ActivityState addActivity(Activity activity) {
-    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+    final newFutureActivities =
+        Set<Activity>.from(state.presentFutureActivities);
 
     newFutureActivities.add(activity);
 
     return state.to(
-      futureActivities: newFutureActivities,
+      presentFutureActivities: newFutureActivities,
     );
   }
 
@@ -34,64 +35,56 @@ extension ActivitiesTransformer on ActivityBloc {
       status: ActivityStatus.completed,
     );
 
-    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+    final newFutureActivities =
+        Set<Activity>.from(state.presentFutureActivities);
     newFutureActivities.remove(activity);
 
     final newPastActivities = Set<Activity>.from(state.pastActivities);
     newPastActivities.add(newActivity);
 
     return state.to(
-      futureActivities: newFutureActivities,
+      presentFutureActivities: newFutureActivities,
       pastActivities: newPastActivities,
     );
   }
 
-  ActivityState startNextOnQueueIfNecessary() {
-    final playingActivities = state.futureActivities
-        .where((activity) => activity.status == ActivityStatus.inProgress)
-        .toList();
-
-    if (playingActivities.isEmpty) {
-      final enqueuedActivities = state.futureActivities
-          .where((activity) =>
-              activity.status == ActivityStatus.enqueued ||
-              activity.status == ActivityStatus.paused)
-          .toList();
-
-      if (enqueuedActivities.isNotEmpty) {
-        final newActivity = enqueuedActivities.first.to(
-          status: ActivityStatus.inProgress,
-        );
-
-        return _replaceActivity(enqueuedActivities.first, newActivity);
-      }
-    }
-
-    return state;
-  }
-
   ActivityState removeExpiredActivities(DateTime now) {
-    final newFutureActivities = state.futureActivities
+    final newFutureActivities = state.presentFutureActivities
         .where((activity) => activity.endTime.isAfter(now))
         .toSet();
 
     return state.to(
-      futureActivities: newFutureActivities,
+      presentFutureActivities: newFutureActivities,
     );
   }
 
   ActivityState _replaceActivity(Activity activity, Activity newActivity) {
-    final newFutureActivities = Set<Activity>.from(state.futureActivities);
+    final newFutureActivities =
+        Set<Activity>.from(state.presentFutureActivities);
     newFutureActivities.remove(activity);
     newFutureActivities.add(newActivity);
 
     return state.to(
-      futureActivities: newFutureActivities,
+      presentFutureActivities: newFutureActivities,
+    );
+  }
+
+  ActivityState playActivities(DateTime now) {
+    final newFutureActivities = state.presentFutureActivities.map((activity) {
+      if (activity.status == ActivityStatus.notStarted &&
+          activity.startTime.isBefore(now)) {
+        return activity.to(status: ActivityStatus.inProgress);
+      }
+      return activity;
+    }).toSet();
+
+    return state.to(
+      presentFutureActivities: newFutureActivities,
     );
   }
 
   ActivityState incrementPlayingActivities(Duration duration) {
-    final newPlayingActivities = state.futureActivities.map((activity) {
+    final newPlayingActivities = state.presentFutureActivities.map((activity) {
       if (activity.status == ActivityStatus.inProgress) {
         return activity.to(currentTime: activity.currentTime.add(duration));
       }
@@ -99,12 +92,12 @@ extension ActivitiesTransformer on ActivityBloc {
     }).toSet();
 
     return state.to(
-      futureActivities: newPlayingActivities,
+      presentFutureActivities: newPlayingActivities,
     );
   }
 
-  ActivityState incrementNotPlayingActivities(Duration duration) {
-    final newFutureActivities = state.futureActivities.map((activity) {
+  ActivityState incrementPausedActivities(Duration duration) {
+    final newFutureActivities = state.presentFutureActivities.map((activity) {
       if (activity.status == ActivityStatus.paused) {
         return activity.to(duration: activity.duration + duration);
       }
@@ -112,7 +105,7 @@ extension ActivitiesTransformer on ActivityBloc {
     }).toSet();
 
     return state.to(
-      futureActivities: newFutureActivities,
+      presentFutureActivities: newFutureActivities,
     );
   }
 }

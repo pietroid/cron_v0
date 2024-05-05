@@ -8,10 +8,11 @@ part of 'activity_state.dart';
 
 ActivityState _$ActivityStateFromJson(Map<String, dynamic> json) =>
     ActivityState(
-      futureActivities: (json['futureActivities'] as List<dynamic>?)
-              ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
-              .toSet() ??
-          const {},
+      presentFutureActivities:
+          (json['presentFutureActivities'] as List<dynamic>?)
+                  ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
+                  .toSet() ??
+              const {},
       pastActivities: (json['pastActivities'] as List<dynamic>?)
               ?.map((e) => Activity.fromJson(e as Map<String, dynamic>))
               .toSet() ??
@@ -21,7 +22,7 @@ ActivityState _$ActivityStateFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ActivityStateToJson(ActivityState instance) =>
     <String, dynamic>{
-      'futureActivities': instance.futureActivities.toList(),
+      'presentFutureActivities': instance.presentFutureActivities.toList(),
       'pastActivities': instance.pastActivities.toList(),
       'latestTimeUpdated': instance.latestTimeUpdated.toIso8601String(),
     };

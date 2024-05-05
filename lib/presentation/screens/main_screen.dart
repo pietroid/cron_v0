@@ -47,7 +47,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
                     if (activity.status == ActivityStatus.inProgress ||
                         activity.status == ActivityStatus.paused) {
                       return PlayingActivityCard(activity: activity);
-                    } else if (activity.status == ActivityStatus.enqueued) {
+                    } else if (activity.status == ActivityStatus.notStarted) {
                       return EnqueuedActivityCard(activity: activity);
                     }
                     return null;
@@ -77,7 +77,7 @@ class _MainScreenState extends State<MainScreen> with WidgetsBindingObserver {
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     final activityBloc = context.read<ActivityBloc>();
     if (state == AppLifecycleState.resumed) {
-      activityBloc.add(RefreshActivities(currentTime: DateTime.now()));
+      activityBloc.add(UpdateActivities(currentTime: DateTime.now()));
     }
   }
 }
