@@ -21,6 +21,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   void initState() {
     _controller = TextEditingController(text: widget.existingActivity?.content);
     activity = Activity.empty();
+    activity.id = DateTime.now().millisecondsSinceEpoch;
     //TODO associate with initial state
     activity.duration = const Duration(minutes: 5);
     super.initState();
@@ -80,12 +81,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       children: [
                         const Text('Tempo:'),
                         TimeActionChoice(
-//TODO: remove this
                           onChanged: (Duration duration) {
-                            setState(() {
-                              activity.duration = duration;
-                              update();
-                            });
+                            activity.duration = duration;
+                            update();
                           },
                         ),
                       ]),
@@ -95,6 +93,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
+            heroTag: null,
             backgroundColor: const Color.fromARGB(255, 156, 10, 0),
             onPressed: activity.content.isEmpty
                 ? null
