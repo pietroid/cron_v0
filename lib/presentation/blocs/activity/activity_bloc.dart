@@ -1,4 +1,5 @@
 import 'package:cron/data/entities/activity.dart';
+import 'package:cron/domain/activities_repository.dart';
 import 'package:cron/domain/activities_transformer.dart';
 import 'package:cron/presentation/blocs/activity/activity_event.dart';
 import 'package:cron/presentation/blocs/activity/activity_state.dart';
@@ -35,18 +36,11 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     ActivityAdded event,
     Emitter<ActivityState> emit,
   ) {
-    DateTime latestActivityEndTime = DateTime.now();
-    if (state.futureActivities.isNotEmpty) {
-      latestActivityEndTime = state.futureActivities
-          .map((activity) => activity.endTime)
-          .reduce((value, element) => value.isAfter(element) ? value : element);
-    }
+    final startTime = newActivitiyStartTime(isPrioritized: event.isPrioritized);
 
     final newActivity = event.activity.to(
-      id: DateTime.now().millisecondsSinceEpoch,
-      startTime: latestActivityEndTime,
-      endTime: latestActivityEndTime.add(event.activity.duration),
-      currentTime: latestActivityEndTime,
+      startTime: startTime,
+      currentTime: startTime,
       status: ActivityStatus.enqueued,
     );
 

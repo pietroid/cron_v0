@@ -9,7 +9,6 @@ part of 'activity.dart';
 Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
       id: json['id'] as int,
       startTime: DateTime.parse(json['startTime'] as String),
-      endTime: DateTime.parse(json['endTime'] as String),
       currentTime: DateTime.parse(json['currentTime'] as String),
       duration: Duration(microseconds: json['duration'] as int),
       status: $enumDecode(_$ActivityStatusEnumMap, json['status']),
@@ -20,7 +19,6 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(
 Map<String, dynamic> _$ActivityToJson(Activity instance) => <String, dynamic>{
       'id': instance.id,
       'startTime': instance.startTime.toIso8601String(),
-      'endTime': instance.endTime.toIso8601String(),
       'currentTime': instance.currentTime.toIso8601String(),
       'duration': instance.duration.inMicroseconds,
       'status': _$ActivityStatusEnumMap[instance.status]!,

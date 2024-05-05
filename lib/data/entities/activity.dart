@@ -7,7 +7,6 @@ part 'activity.g.dart';
 class Activity with EquatableMixin {
   int id;
   DateTime startTime;
-  DateTime endTime;
   DateTime currentTime;
 
   Duration duration;
@@ -18,10 +17,11 @@ class Activity with EquatableMixin {
 
   bool isFixed;
 
+  DateTime get endTime => startTime.add(duration);
+
   Activity({
     required this.id,
     required this.startTime,
-    required this.endTime,
     required this.currentTime,
     required this.duration,
     required this.status,
@@ -30,8 +30,7 @@ class Activity with EquatableMixin {
   });
 
   @override
-  List<Object> get props =>
-      [id, startTime, endTime, currentTime, status, content];
+  List<Object> get props => [id, startTime, currentTime, status, content];
 
   factory Activity.fromJson(Map<String, dynamic> json) =>
       _$ActivityFromJson(json);
@@ -41,7 +40,6 @@ class Activity with EquatableMixin {
   Activity to({
     int? id,
     DateTime? startTime,
-    DateTime? endTime,
     DateTime? currentTime,
     Duration? duration,
     ActivityStatus? status,
@@ -51,7 +49,6 @@ class Activity with EquatableMixin {
     return Activity(
       id: id ?? this.id,
       startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
       currentTime: currentTime ?? this.currentTime,
       duration: duration ?? this.duration,
       status: status ?? this.status,
@@ -64,7 +61,6 @@ class Activity with EquatableMixin {
     return Activity(
       id: -1,
       startTime: DateTime(0),
-      endTime: DateTime(0),
       currentTime: DateTime(0),
       duration: Duration.zero,
       status: ActivityStatus.enqueued,

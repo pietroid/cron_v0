@@ -106,7 +106,7 @@ extension ActivitiesTransformer on ActivityBloc {
   ActivityState incrementNotPlayingActivities(Duration duration) {
     final newFutureActivities = state.futureActivities.map((activity) {
       if (activity.status == ActivityStatus.paused) {
-        return activity.to(endTime: activity.endTime.add(duration));
+        return activity.to(duration: activity.duration + duration);
       }
       return activity;
     }).toSet();
