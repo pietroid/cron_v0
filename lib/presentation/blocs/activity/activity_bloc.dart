@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cron/data/entities/activity.dart';
 import 'package:cron/domain/activities_repository.dart';
 import 'package:cron/domain/activities_transformer.dart';
@@ -9,7 +11,11 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
     with HydratedMixin {
   late ActivityState currentState;
 
-  ActivityBloc() : super(ActivityState(latestTimeUpdated: DateTime.now())) {
+  ActivityBloc()
+      : super(ActivityState(
+            presentFutureActivities: LinkedList<Activity>(),
+            pastActivities: LinkedList<Activity>(),
+            latestTimeUpdated: DateTime.now())) {
     hydrate();
     on<ActivityAdded>(_onActivityAdded);
     on<ActivityDeleted>(_onActivityDeleted);
@@ -69,10 +75,10 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState>
         event.currentTime.difference(state.latestTimeUpdated);
     currentState.latestTimeUpdated = event.currentTime;
 
+    removeExpiredActivities(event.currentTime);
     playActivities(event.currentTime);
     incrementPlayingActivities(timeElapsed);
     incrementPausedActivities(timeElapsed);
-    removeExpiredActivities(event.currentTime);
 
     //currentState.presentFutureActivities = <Activity>{};
 

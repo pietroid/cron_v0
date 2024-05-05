@@ -1,10 +1,12 @@
+import 'dart:collection';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'activity.g.dart';
 
 @JsonSerializable()
-class Activity with EquatableMixin {
+final class Activity extends LinkedListEntry<Activity> with EquatableMixin {
   int id;
   DateTime startTime;
   DateTime currentTime;
