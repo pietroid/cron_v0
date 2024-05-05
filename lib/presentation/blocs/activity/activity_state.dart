@@ -5,12 +5,12 @@ import 'package:json_annotation/json_annotation.dart';
 part 'activity_state.g.dart';
 
 @JsonSerializable()
-class ActivityState extends Equatable {
-  final Set<Activity> presentFutureActivities;
-  final Set<Activity> pastActivities;
-  final DateTime latestTimeUpdated;
+class ActivityState with EquatableMixin {
+  Set<Activity> presentFutureActivities;
+  Set<Activity> pastActivities;
+  DateTime latestTimeUpdated;
 
-  const ActivityState({
+  ActivityState({
     this.presentFutureActivities = const {},
     this.pastActivities = const {},
     required this.latestTimeUpdated,
@@ -40,4 +40,30 @@ class ActivityState extends Equatable {
       _$ActivityStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$ActivityStateToJson(this);
+
+  ActivityState copy() {
+    return ActivityState(
+      presentFutureActivities: presentFutureActivities
+          .map((activity) => Activity(
+              id: activity.id,
+              startTime: activity.startTime,
+              currentTime: activity.currentTime,
+              duration: activity.duration,
+              status: activity.status,
+              content: activity.content,
+              isFixed: activity.isFixed))
+          .toSet(),
+      pastActivities: pastActivities
+          .map((activity) => Activity(
+              id: activity.id,
+              startTime: activity.startTime,
+              currentTime: activity.currentTime,
+              duration: activity.duration,
+              status: activity.status,
+              content: activity.content,
+              isFixed: activity.isFixed))
+          .toSet(),
+      latestTimeUpdated: latestTimeUpdated,
+    );
+  }
 }
