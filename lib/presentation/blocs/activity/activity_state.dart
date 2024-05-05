@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:cron/data/entities/activity.dart';
+import 'package:cron/data/linked_list_converter.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,13 +9,16 @@ part 'activity_state.g.dart';
 
 @JsonSerializable()
 class ActivityState with EquatableMixin {
-  Set<Activity> presentFutureActivities;
-  Set<Activity> pastActivities;
+  @LinkedListConverter()
+  LinkedList<Activity> presentFutureActivities;
+
+  @LinkedListConverter()
+  LinkedList<Activity> pastActivities;
   DateTime latestTimeUpdated;
 
   ActivityState({
-    this.presentFutureActivities = const {},
-    this.pastActivities = const {},
+    required this.presentFutureActivities,
+    required this.pastActivities,
     required this.latestTimeUpdated,
   });
 
@@ -24,8 +30,8 @@ class ActivityState with EquatableMixin {
       ];
 
   ActivityState to({
-    Set<Activity>? presentFutureActivities,
-    Set<Activity>? pastActivities,
+    LinkedList<Activity>? presentFutureActivities,
+    LinkedList<Activity>? pastActivities,
     DateTime? latestTimeUpdated,
   }) {
     return ActivityState(
@@ -43,26 +49,24 @@ class ActivityState with EquatableMixin {
 
   ActivityState copy() {
     return ActivityState(
-      presentFutureActivities: presentFutureActivities
-          .map((activity) => Activity(
-              id: activity.id,
-              startTime: activity.startTime,
-              currentTime: activity.currentTime,
-              duration: activity.duration,
-              status: activity.status,
-              content: activity.content,
-              isFixed: activity.isFixed))
-          .toSet(),
-      pastActivities: pastActivities
-          .map((activity) => Activity(
-              id: activity.id,
-              startTime: activity.startTime,
-              currentTime: activity.currentTime,
-              duration: activity.duration,
-              status: activity.status,
-              content: activity.content,
-              isFixed: activity.isFixed))
-          .toSet(),
+      presentFutureActivities: LinkedList<Activity>()
+        ..addAll(presentFutureActivities.map((activity) => Activity(
+            id: activity.id,
+            startTime: activity.startTime,
+            currentTime: activity.currentTime,
+            duration: activity.duration,
+            status: activity.status,
+            content: activity.content,
+            isFixed: activity.isFixed))),
+      pastActivities: LinkedList<Activity>()
+        ..addAll(pastActivities.map((activity) => Activity(
+            id: activity.id,
+            startTime: activity.startTime,
+            currentTime: activity.currentTime,
+            duration: activity.duration,
+            status: activity.status,
+            content: activity.content,
+            isFixed: activity.isFixed))),
       latestTimeUpdated: latestTimeUpdated,
     );
   }
